@@ -3,6 +3,20 @@
 Pytest plugin that provides a `bq_client_mock` fixture.
 This fixture mocks the `google.cloud.bigquery.Client` class and provides a way to mock an API response using `pytest.mark`, for example:
 
+## Install and use
+
+Install the plugin with
+```pip install pytest-bigquery-mock```
+
+Then, in your `conftest.py` file add `pytest-bigquery-mock` to your list of plugins
+
+```tests/conftest.py
+
+plugins = ["pytest-bigquery-mock"]
+```
+
+This allows you to use the `bq_client_mock` fixture in your pytest tests.
+
 ```
 def function_that_calls_bigquery(bq_client):
     row_iter = bq_client.query("SELECT * FROM table").result()
