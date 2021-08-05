@@ -3,6 +3,8 @@ import pytest
 from google.cloud.bigquery.table import Row
 
 
+job_counter = 0
+
 class FakeRowIterator:
     def __init__(self, rows):
         self._rows = rows
@@ -19,8 +21,21 @@ class FakeRowIterator:
 
         return df
 
+
+class FakeQuery:
+    def __init__(self, row_iterator):
+        self.row_iterator = row_iterator
+        global job_counter
+        self.job_id, job_counter = job_counter, job_counter + 1
+
+    def add_done_callback(self, func):
+        func(self)
+
     def result(self):
-        return self
+        return self.row_iterator
+
+    def to_dataframe(self):
+        return self.result().to_dataframe()
 
 
 @pytest.fixture
@@ -42,7 +57,8 @@ def bq_client_mock(request, mocker):
                         Row(row_data, columns) for row_data in qry_data["table"]["rows"]
                     ]
                     row_iter = FakeRowIterator(rows)
-                    return row_iter
+                    query = FakeQuery(row_iter)
+                    return query
 
         mock_bq_client = mocker.patch("google.cloud.bigquery.client.Client")
         mock_bq_client.query = mock_client_query
