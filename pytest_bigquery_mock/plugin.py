@@ -31,7 +31,7 @@ class FakeQuery:
     def add_done_callback(self, func):
         func(self)
 
-    def result(self):
+    def result(self, *args, **kwargs):
         return self.row_iterator
 
     def to_dataframe(self):
