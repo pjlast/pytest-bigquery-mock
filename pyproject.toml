@@ -1,3 +1,9 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+markers = [
+    "bq_query_return_data",
+    "bq_load_table_state"
+]
